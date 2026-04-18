@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard — SentiGojek</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --hijau-tua:  #1B5E20;
+      --hijau-mid:  #2E7D32;
+      --hijau-muda: #43A047;
+      --hijau-soft: #C8E6C9;
+      --hijau-pale: #F1F8F1;
+    }
+    * { font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background: var(--hijau-pale); }
+
+    .navbar {
+      background: linear-gradient(135deg, var(--hijau-tua), var(--hijau-mid));
+      padding: 14px 0;
+    }
+    .navbar-brand {
+      font-weight: 700; font-size: 20px; color: white !important;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-link {
+      color: rgba(255,255,255,0.8) !important; font-weight: 500;
+      padding: 6px 16px !important; border-radius: 8px; transition: all 0.2s;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: white !important; background: rgba(255,255,255,0.15);
+    }
+
+    .page-header {
+      background: linear-gradient(135deg, var(--hijau-mid), var(--hijau-muda));
+      color: white; padding: 28px 0; margin-bottom: 28px;
+    }
+    .page-header h4 { font-weight: 700; margin: 0; }
+    .page-header p  { font-size: 13px; opacity: 0.85; margin: 4px 0 0; }
+
+    .viz-card {
+      background: white; border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+      overflow: hidden; margin-bottom: 24px;
+    }
+    .viz-card-header {
+      padding: 14px 18px;
+      background: linear-gradient(135deg, var(--hijau-pale), #E8F5E9);
+      border-bottom: 1px solid var(--hijau-soft);
+      font-weight: 600; font-size: 14px; color: var(--hijau-tua);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .viz-card-body { padding: 16px; text-align: center; }
+    .viz-card-body img { width: 100%; border-radius: 8px; display: block; }
+
+    .wc-badge {
+      display: inline-block; padding: 4px 12px; border-radius: 20px;
+      font-size: 11px; font-weight: 600; margin-bottom: 10px;
+    }
+    .wc-badge.positif { background: #E8F5E9; color: #2E7D32; }
+    .wc-badge.negatif  { background: #FFEBEE; color: #C62828; }
+    .wc-badge.netral   { background: #FFF3E0; color: #E65100; }
+
+    .section-title {
+      font-size: 15px; font-weight: 700; color: var(--hijau-tua);
+      margin: 8px 0 16px; display: flex; align-items: center; gap: 8px;
+    }
+
+    footer {
+      background: var(--hijau-tua); color: rgba(255,255,255,0.7);
+      text-align: center; padding: 16px; font-size: 12px; margin-top: 24px;
+    }
+    footer span { color: white; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="/">🤖 SentimenAI</a>
+    <div class="d-flex gap-1">
+      <a class="nav-link" href="/"><i class="bi bi-house-fill me-1"></i>Analisis</a>
+      <a class="nav-link active" href="/dashboard"><i class="bi bi-bar-chart-fill me-1"></i>Dashboard</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="container">
+    <h4><i class="bi bi-graph-up-arrow me-2"></i>Dashboard Visualisasi</h4>
+    <p>Analisis {{ total }} komentar pengguna Gojek dari Google Maps</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Baris 1: Distribusi + Rating -->
+  <div class="section-title">
+    <i class="bi bi-bar-chart-fill" style="color:var(--hijau-muda)"></i>
+    Distribusi Data
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="viz-card">
+        <div class="viz-card-header">
+          <i class="bi bi-pie-chart-fill" style="color:var(--hijau-muda)"></i>
+          Distribusi Sentimen
+        </div>
+        <div class="viz-card-body">
+          <img src="/static/images/chart_distribusi.png" alt="Distribusi Sentimen">
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="viz-card">
+        <div class="viz-card-header">
+          <i class="bi bi-star-fill" style="color:#FB8C00"></i>
+          Distribusi Rating
+        </div>
+        <div class="viz-card-body">
+          <img src="/static/images/chart_platform.png" alt="Distribusi Rating">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Baris 2: Per Hari -->
+  <div class="section-title">
+    <i class="bi bi-calendar3" style="color:var(--hijau-muda)"></i>
+    Aktivitas Waktu
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="viz-card">
+        <div class="viz-card-header">
+          <i class="bi bi-calendar3" style="color:var(--hijau-muda)"></i>
+          Aktivitas Komentar per Hari
+        </div>
+        <div class="viz-card-body">
+          <img src="/static/images/chart_hari.png" alt="Per Hari">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Baris 3: Per Jam -->
+  <div class="row">
+    <div class="col-12">
+      <div class="viz-card">
+        <div class="viz-card-header">
+          <i class="bi bi-clock-fill" style="color:var(--hijau-muda)"></i>
+          Aktivitas Komentar per Jam
+        </div>
+        <div class="viz-card-body">
+          <img src="/static/images/chart_jam.png" alt="Per Jam">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Baris 4: WordCloud -->
+  <div class="section-title">
+    <i class="bi bi-chat-quote-fill" style="color:var(--hijau-muda)"></i>
+    WordCloud per Sentimen
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="viz-card">
+        <div class="viz-card-header">😊 WordCloud Positif</div>
+        <div class="viz-card-body">
+          <span class="wc-badge positif">Komentar Positif</span>
+          <img src="/static/images/wordcloud_positif.png" alt="WordCloud Positif">
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="viz-card">
+        <div class="viz-card-header">😞 WordCloud Negatif</div>
+        <div class="viz-card-body">
+          <span class="wc-badge negatif">Komentar Negatif</span>
+          <img src="/static/images/wordcloud_negatif.png" alt="WordCloud Negatif">
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="viz-card">
+        <div class="viz-card-header">😐 WordCloud Netral</div>
+        <div class="viz-card-body">
+          <span class="wc-badge netral">Komentar Netral</span>
+          <img src="/static/images/wordcloud_netral.png" alt="WordCloud Netral">
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+ 
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
