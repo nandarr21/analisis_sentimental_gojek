@@ -10,7 +10,7 @@ from utils.visualize import generate_all_visuals
 app = Flask(__name__)
 
 # ── Load model & tools ──────────────────────────────────────
-model = tf.keras.models.load_model('model/lstm_model.keras')
+model = tf.keras.models.load_model('model/lstm_model_fixed.keras')
 with open('model/tokenizer.pkl', 'rb') as f:
     tokenizer = pickle.load(f)
 with open('model/label_encoder.pkl', 'rb') as f:
