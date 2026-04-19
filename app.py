@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, jsonify, send_from_directory
 import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, Bidirectional, LSTM, Dense, Dropout
 import pickle
 import pandas as pd
 import numpy as np
@@ -9,8 +11,30 @@ from utils.visualize import generate_all_visuals
 
 app = Flask(__name__)
 
-# ── Load model & tools ──────────────────────────────────────
-model = tf.keras.models.load_model('model/lstm_model_fixed.keras')
+# ── Build & load model dari weights ─────────────────────────
+def build_model():
+    m = Sequential([
+        Embedding(10000, 128, input_length=100),
+        Bidirectional(LSTM(128, return_sequences=True)),
+        Dropout(0.4),
+        Bidirectional(LSTM(64)),
+        Dropout(0.4),
+        Dense(64, activation='relu'),
+        Dropout(0.3),
+        Dense(3, activation='softmax')
+    ])
+    m.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+    return m
+
+model = build_model()
+model.predict(np.zeros((1, 100)), verbose=0)  # inisialisasi
+weights = np.load('model/model_weights.npy', allow_pickle=True)
+model.set_weights(list(weights))
+print("Model loaded!")
+
+# ── Load tokenizer & label encoder ──────────────────────────
 with open('model/tokenizer.pkl', 'rb') as f:
     tokenizer = pickle.load(f)
 with open('model/label_encoder.pkl', 'rb') as f:
@@ -24,13 +48,11 @@ df_global = pd.read_csv('dataset/data_mentah.csv',
                         encoding='utf-8-sig',
                         usecols=['user', 'rating', 'review', 'at'])
 
-# Konversi rating ke int
 df_global['rating'] = pd.to_numeric(df_global['rating'], errors='coerce')
 df_global = df_global.dropna(subset=['rating'])
 df_global['rating'] = df_global['rating'].astype(int)
-df_global = df_global.rename(columns={'at': 'timestamp'})
+df_global = df_global.rename(columns={'review': 'komentar', 'at': 'timestamp'})
 
-# Buat kolom sentimen dari rating
 def rating_to_sentimen(r):
     if r >= 4:   return 'positif'
     elif r == 3: return 'netral'
@@ -39,17 +61,13 @@ def rating_to_sentimen(r):
 df_global['sentimen'] = df_global['rating'].apply(rating_to_sentimen)
 df_global['platform'] = 'Google Maps'
 
-# Buat folder images kalau belum ada
-os.makedirs('static/images', exist_ok=True) 
-
-# ── Generate visualisasi saat startup ────────────────────────
+# ── Generate visualisasi ─────────────────────────────────────
+os.makedirs('static/images', exist_ok=True)
 if not os.path.exists('static/images/chart_distribusi.png'):
-     print("Generating visualizations...")
-     generate_all_visuals(df_global)
-     print("Done!")
-@app.route('/static/images/<filename>')
-def serve_image(filename):
-    return send_from_directory('static/images', filename)
+    print("Generating visualizations...")
+    generate_all_visuals(df_global)
+    print("Done!")
+
 # ── Routes ───────────────────────────────────────────────────
 @app.route('/')
 def index():
@@ -88,6 +106,10 @@ def dashboard():
                            dist=dist,
                            platform_dist=platform_dist,
                            total=len(df_global))
+
+@app.route('/static/images/<filename>')
+def serve_image(filename):
+    return send_from_directory('static/images', filename)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

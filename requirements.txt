@@ -7,4 +7,4 @@ matplotlib
 seaborn
 wordcloud
 Sastrawi
-tensorflow-cpu==2.21.0
+tensorflow-cpu
