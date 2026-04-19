@@ -39,10 +39,14 @@ def rating_to_sentimen(r):
 df_global['sentimen'] = df_global['rating'].apply(rating_to_sentimen)
 df_global['platform'] = 'Google Maps'
 
+# Buat folder images kalau belum ada
+os.makedirs('static/images', exist_ok=True) 
+
 # ── Generate visualisasi saat startup ────────────────────────
 if not os.path.exists('static/images/chart_distribusi.png'):
-    generate_all_visuals(df_global)
-    
+     print("Generating visualizations...")
+     generate_all_visuals(df_global)
+     print("Done!")
 @app.route('/static/images/<filename>')
 def serve_image(filename):
     return send_from_directory('static/images', filename)
