@@ -35,8 +35,8 @@ model.set_weights(list(weights))
 print("Model loaded!")
 
 # ── Load tokenizer & label encoder ──────────────────────────
-with open('model/tokenizer.pkl', 'rb') as f:
-    tokenizer = pickle.load(f)
+from utils.preprocessing import load_tokenizer
+tokenizer = load_tokenizer('model/tokenizer.json')
 with open('model/label_encoder.pkl', 'rb') as f:
     le = pickle.load(f)
 
