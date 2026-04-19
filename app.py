@@ -10,7 +10,7 @@ from utils.visualize import generate_all_visuals
 app = Flask(__name__)
 
 # ── Load model & tools ──────────────────────────────────────
-model = tf.keras.models.load_model('model/lstm_model.h5')
+model = tf.keras.models.load_model('model/lstm_model.keras')
 with open('model/tokenizer.pkl', 'rb') as f:
     tokenizer = pickle.load(f)
 with open('model/label_encoder.pkl', 'rb') as f:
@@ -90,4 +90,5 @@ def dashboard():
                            total=len(df_global))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
