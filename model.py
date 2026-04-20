@@ -120,10 +120,11 @@ for i, row in enumerate(cm):
 
 # ── 10. Simpan ───────────────────────────────────────────────
 model.save('model/lstm_model.h5')
-with open('model/tokenizer.pkl', 'wb') as f:
-    pickle.dump(tokenizer, f)
-with open('model/label_encoder.pkl', 'wb') as f:
-    pickle.dump(le, f)
+# Load tokenizer & label encoder (pkl biasa)
+with open('model/tokenizer.pkl', 'rb') as f:
+    tokenizer = pickle.load(f)
+with open('model/label_encoder.pkl', 'rb') as f:
+    le = pickle.load(f)
 
 print("\nModel berhasil disimpan!")
 print("Label classes:", le.classes_)
